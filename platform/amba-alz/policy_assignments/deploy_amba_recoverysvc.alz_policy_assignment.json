@@ -10,14 +10,29 @@
   "properties": {
     "description": "This initiative deploys Azure Monitor Baseline Alerts to monitor Recovery Services such as Azure Backup, and Azure Site Recovery.",
     "displayName": "Deploy Azure Monitor Baseline Alerts for Recovery Services",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policySetDefinitions/Alerting-RecoveryServices",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/defaultString0/providers/Microsoft.Authorization/policySetDefinitions/Alerting-RecoveryServices",
     "enforcementMode": "Default",
     "nonComplianceMessages": [
       {
         "message": "Alerting {enforcementMode} be deployed to Azure services."
       }
     ],
-    "parameters": {},
+    "parameters": {
+      "ALZMonitorDisableTagName": {
+        "value": "MonitorDisable"
+      },
+      "ALZMonitorDisableTagValues": {
+        "value": [
+          "true",
+          "Test",
+          "Dev",
+          "Sandbox"
+        ]
+      },
+      "RVBackupHealthMonitorPolicyEffect": {
+        "value": "modify"
+      }
+    },
     "metadata": {
       "_deployed_by_amba": true
     },
