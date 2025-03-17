@@ -9,7 +9,7 @@
   },
   "properties": {
     "description": "This initiative deploys Azure Monitor Baseline Alerts to monitor Azure Arc-enabled Servers.",
-    "displayName": "Deploy Azure Monitor Baseline Alerts for Hybrid VMs",
+    "displayName": "Deploy Azure Monitor Baseline Alerts for Hybrid Virtual Machines",
     "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policySetDefinitions/Alerting-HybridVM",
     "enforcementMode": "Default",
     "nonComplianceMessages": [
@@ -52,38 +52,74 @@
       "HybridVMDataDiskReadLatencyPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "HybridVMDataDiskReadLatencycheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "HybridVMDataDiskSpacePolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "HybridVMDataDiskSpacecheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       },
       "HybridVMDataDiskWriteLatencyPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "HybridVMDataDiskWriteLatencycheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "HybridVMDisconnectedAlertPolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "HybridVMDisconnectedAlertcheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       },
       "HybridVMHeartBeatRGPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "HybridVMHeartBeatRGcheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "HybridVMNetworkInPolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "HybridVMNetworkIncheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       },
       "HybridVMNetworkOutPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "HybridVMNetworkOutcheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "HybridVMOSDiskReadLatencyPolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "HybridVMOSDiskReadLatencycheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       },
       "HybridVMOSDiskSpacePolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "HybridVMOSDiskSpacecheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "HybridVMOSDiskWriteLatencyPolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "HybridVMOSDiskWriteLatencycheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       },
       "HybridVMPercentCPUPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "HybridVMPercentCPUcheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "HybridVMPercentMemoryPolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "HybridVMPercentMemorycheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       }
     },
     "metadata": {
