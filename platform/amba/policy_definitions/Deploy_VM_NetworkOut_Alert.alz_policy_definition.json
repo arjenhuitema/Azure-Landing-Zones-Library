@@ -1,8 +1,8 @@
 {
   "name": "Deploy_VM_NetworkOut_Alert",
   "properties": {
-    "description": "Policy to audit/deploy VM Network Out Alert",
-    "displayName": "Deploy VM Network Write Alert",
+    "description": "Policy to audit/deploy Azure VM Network Out Alert",
+    "displayName": "Deploy Azure VM Network Write Alert",
     "metadata": {
       "_deployed_by_amba": "True",
       "alzCloudEnvironments": [
@@ -10,7 +10,7 @@
       ],
       "category": "Compute",
       "source": "https://github.com/Azure/azure-monitor-baseline-alerts/",
-      "version": "1.5.0"
+      "version": "1.7.1"
     },
     "mode": "All",
     "parameters": {
@@ -38,6 +38,7 @@
       "UAMIResourceId": {
         "defaultValue": "",
         "metadata": {
+          "assignPermissions": true,
           "description": "The resource Id of the user assigned managed identity.",
           "displayName": "User Assigned managed Identity resource Id."
         },
@@ -101,15 +102,17 @@
         },
         "type": "String"
       },
-      "computersToInclude": {
-        "defaultValue": [
-          "*"
+      "checkWorkspaceAlertsStorageConfigured": {
+        "allowedValues": [
+          "true",
+          "false"
         ],
+        "defaultValue": "false",
         "metadata": {
-          "description": "Array of Computer to be monitored",
-          "displayName": "Computers to be included to be monitored"
+          "description": "Don't create the alert rule if the Log Analytics workspace doesn't have a configured linked storage account (relevant if you're using Customer Managed Keys).",
+          "displayName": "Require a workspace linked storage"
         },
-        "type": "array"
+        "type": "String"
       },
       "effect": {
         "allowedValues": [
@@ -273,8 +276,8 @@
                 "autoResolveTime": {
                   "value": "[parameters('autoResolveTime')]"
                 },
-                "computersToInclude": {
-                  "value": "[parameters('computersToInclude')]"
+                "checkWorkspaceAlertsStorageConfigured": {
+                  "value": "[parameters('checkWorkspaceAlertsStorageConfigured')]"
                 },
                 "enabled": {
                   "value": "[parameters('enabled')]"
@@ -335,8 +338,8 @@
                   "autoResolveTime": {
                     "type": "String"
                   },
-                  "computersToInclude": {
-                    "type": "array"
+                  "checkWorkspaceAlertsStorageConfigured": {
+                    "type": "String"
                   },
                   "enabled": {
                     "type": "String"
@@ -426,6 +429,7 @@
                             "name": "[concat(subscription().displayName, '-VMHighNetworkOutAlert')]",
                             "properties": {
                               "autoMitigate": "[parameters('autoMitigate')]",
+                              "checkWorkspaceAlertsStorageConfigured": "[parameters('checkWorkspaceAlertsStorageConfigured')]",
                               "criteria": {
                                 "allOf": [
                                   {
@@ -433,7 +437,9 @@
                                       {
                                         "name": "Computer",
                                         "operator": "Include",
-                                        "values": "[parameters('computersToInclude')]"
+                                        "values": [
+                                          "*"
+                                        ]
                                       },
                                       {
                                         "name": "NetworkInterface",
@@ -448,7 +454,7 @@
                                       "numberOfEvaluationPeriods": "[parameters('evaluationPeriods')]"
                                     },
                                     "operator": "[parameters('operator')]",
-                                    "query": "[format('let policyThresholdString = \"{2}\"; let excludedResources = (arg(\"\").resources | where type =~ \"Microsoft.Compute/virtualMachines\" | project _ResourceId = id, tags | where parse_json(tostring(tags.[\"{0}\"])) in~ (\"{1}\")); let excludedVMSSNodes = (arg(\"\").resources | where type =~ \"Microsoft.Compute/virtualMachines\" | extend isVMSS = isnotempty(properties.virtualMachineScaleSet) | where isVMSS | project id, name); let overridenResource = (arg(\"\").resources | where type =~ \"Microsoft.Compute/virtualMachines\" | project _ResourceId = tolower(id), tags | where tags contains \"_amba-WriteBytesPerSecond-Data-threshold-Override_\"); InsightsMetrics | where _ResourceId has \"Microsoft.Compute/virtualMachines\" | where _ResourceId !in~ (excludedResources) | where _ResourceId !in~ (excludedVMSSNodes) | where Origin == \"vm.azm.ms\" | where Namespace == \"Network\" and Name == \"WriteBytesPerSecond\" | extend NetworkInterface=tostring(todynamic(Tags)[\"vm.azm.ms/networkDeviceId\"]) | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface | join hint.remote=left kind=leftouter overridenResource on _ResourceId | project-away _ResourceId1 | extend appliedThresholdString = iif(tags contains \"_amba-WriteBytesPerSecond-Data-threshold-Override_\", tostring(tags.[\"_amba-WriteBytesPerSecond-Data-threshold-Override_\"]), policyThresholdString) | extend appliedThreshold = toint(appliedThresholdString) | where AggregatedValue \u003e appliedThreshold | project TimeGenerated, Computer, _ResourceId, NetworkInterface, AggregatedValue', parameters('MonitorDisableTagName'), join(parameters('MonitorDisableTagValues'), '\",\"'), parameters('threshold'))]",
+                                    "query": "[format('let policyThresholdString = \"{0}\"; let resourceTagging = (arg(\"\").resources | where type =~ \"Microsoft.Compute/virtualMachines\" | where isempty(properties.virtualMachineScaleSet) | where tags.[\"{1}\"] !in~ (\"{2}\") | project _ResourceId = tolower(id), resourceTags = tags); InsightsMetrics | where _ResourceId has \"Microsoft.Compute/virtualMachines\" | where Origin == \"vm.azm.ms\" | where Namespace == \"Network\" and Name == \"WriteBytesPerSecond\" | extend NetworkInterface=tostring(todynamic(Tags)[\"vm.azm.ms/networkDeviceId\"]) | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface | join hint.remote=left kind=inner (resourceTagging ) on _ResourceId | project-away _ResourceId1 | extend newThresholdString = tostring(resourceTags.[\"{3}\"]) | extend appliedThreshold = iif(isempty(newThresholdString), toint(policyThresholdString), toint(newThresholdString)) | where AggregatedValue \u003e appliedThreshold | project TimeGenerated, Computer, _ResourceId, NetworkInterface, AggregatedValue, appliedThreshold' , parameters('threshold'), parameters('MonitorDisableTagName'), join(parameters('MonitorDisableTagValues'), '\",\"'), '_amba-WriteBytesPerSecond-threshold-Override_')]",
                                     "resourceIdColumn": "_ResourceId",
                                     "threshold": 0,
                                     "timeAggregation": "[parameters('timeAggregation')]"
@@ -484,8 +490,8 @@
                                 "autoResolveTime": {
                                   "value": "[parameters('autoResolveTime')]"
                                 },
-                                "computersToInclude": {
-                                  "value": "[parameters('computersToInclude')]"
+                                "checkWorkspaceAlertsStorageConfigured": {
+                                  "value": "[parameters('checkWorkspaceAlertsStorageConfigured')]"
                                 },
                                 "enabled": {
                                   "value": "[parameters('enabled')]"
@@ -571,6 +577,10 @@
                 "field": "Microsoft.Insights/scheduledQueryRules/autoMitigate"
               },
               {
+                "equals": "[parameters('checkWorkspaceAlertsStorageConfigured')]",
+                "field": "Microsoft.Insights/scheduledQueryRules/checkWorkspaceAlertsStorageConfigured"
+              },
+              {
                 "equals": "[parameters('operator')]",
                 "field": "Microsoft.Insights/scheduledQueryRules/criteria.allOf[*].operator"
               },
@@ -587,7 +597,7 @@
                 "field": "Microsoft.Insights/scheduledQueryRules/criteria.allOf[*].failingPeriods.minFailingPeriodsToAlert"
               },
               {
-                "equals": "[format('let policyThresholdString = \"{2}\"; let excludedResources = (arg(\"\").resources | where type =~ \"Microsoft.Compute/virtualMachines\" | project _ResourceId = id, tags | where parse_json(tostring(tags.[\"{0}\"])) in~ (\"{1}\")); let excludedVMSSNodes = (arg(\"\").resources | where type =~ \"Microsoft.Compute/virtualMachines\" | extend isVMSS = isnotempty(properties.virtualMachineScaleSet) | where isVMSS | project id, name); let overridenResource = (arg(\"\").resources | where type =~ \"Microsoft.Compute/virtualMachines\" | project _ResourceId = tolower(id), tags | where tags contains \"_amba-WriteBytesPerSecond-Data-threshold-Override_\"); InsightsMetrics | where _ResourceId has \"Microsoft.Compute/virtualMachines\" | where _ResourceId !in~ (excludedResources) | where _ResourceId !in~ (excludedVMSSNodes) | where Origin == \"vm.azm.ms\" | where Namespace == \"Network\" and Name == \"WriteBytesPerSecond\" | extend NetworkInterface=tostring(todynamic(Tags)[\"vm.azm.ms/networkDeviceId\"]) | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface | join hint.remote=left kind=leftouter overridenResource on _ResourceId | project-away _ResourceId1 | extend appliedThresholdString = iif(tags contains \"_amba-WriteBytesPerSecond-Data-threshold-Override_\", tostring(tags.[\"_amba-WriteBytesPerSecond-Data-threshold-Override_\"]), policyThresholdString) | extend appliedThreshold = toint(appliedThresholdString) | where AggregatedValue \u003e appliedThreshold | project TimeGenerated, Computer, _ResourceId, NetworkInterface, AggregatedValue', parameters('MonitorDisableTagName'), join(parameters('MonitorDisableTagValues'), '\",\"'), parameters('threshold'))]",
+                "equals": "[format('let policyThresholdString = \"{0}\"; let resourceTagging = (arg(\"\").resources | where type =~ \"Microsoft.Compute/virtualMachines\" | where isempty(properties.virtualMachineScaleSet) | where tags.[\"{1}\"] !in~ (\"{2}\") | project _ResourceId = tolower(id), resourceTags = tags); InsightsMetrics | where _ResourceId has \"Microsoft.Compute/virtualMachines\" | where Origin == \"vm.azm.ms\" | where Namespace == \"Network\" and Name == \"WriteBytesPerSecond\" | extend NetworkInterface=tostring(todynamic(Tags)[\"vm.azm.ms/networkDeviceId\"]) | summarize AggregatedValue = avg(Val) by bin(TimeGenerated, 15m), Computer, _ResourceId, NetworkInterface | join hint.remote=left kind=inner (resourceTagging ) on _ResourceId | project-away _ResourceId1 | extend newThresholdString = tostring(resourceTags.[\"{3}\"]) | extend appliedThreshold = iif(isempty(newThresholdString), toint(policyThresholdString), toint(newThresholdString)) | where AggregatedValue \u003e appliedThreshold | project TimeGenerated, Computer, _ResourceId, NetworkInterface, AggregatedValue, appliedThreshold' , parameters('threshold'), parameters('MonitorDisableTagName'), join(parameters('MonitorDisableTagValues'), '\",\"'), '_amba-WriteBytesPerSecond-threshold-Override_')]",
                 "field": "Microsoft.Insights/scheduledQueryRules/criteria.allOf[*].query"
               },
               {
