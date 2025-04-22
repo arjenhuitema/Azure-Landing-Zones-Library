@@ -1,23 +1,23 @@
 {
-  "name": "Deploy_activitylog_KeyVault_Delete",
+  "name": "Deploy_ActivityLog_AppInsights_Delete",
   "properties": {
-    "description": "Policy to Deploy Activity Log Key Vault Delete Alert",
-    "displayName": "Deploy Azure Monitor Baseline Alerts (AMBA-ALZ) - Activity Log Key Vault Delete Alert",
+    "description": "Policy to Deploy Activity Log Application Insights Delete Alert",
+    "displayName": "Deploy Azure Monitor Baseline Alerts (AMBA-ALZ) - Activity Log Application Insights Delete Alert",
     "metadata": {
       "_deployed_by_amba": "True",
       "alzCloudEnvironments": [
         "AzureCloud"
       ],
-      "category": "Key Vault",
+      "category": "Monitoring",
       "source": "https://github.com/Azure/azure-monitor-baseline-alerts/",
-      "version": "1.1.1"
+      "version": "1.0.1"
     },
     "mode": "All",
     "parameters": {
       "MonitorDisableTagName": {
         "defaultValue": "MonitorDisable",
         "metadata": {
-          "description": "Tag name to disable monitoring. Set to true if monitoring should be disabled",
+          "description": "Tag name used to disable monitoring at the resource level. Set to true if monitoring should be disabled.",
           "displayName": "ALZ Monitoring disabled tag name"
         },
         "type": "String"
@@ -90,7 +90,7 @@
       "if": {
         "allOf": [
           {
-            "equals": "microsoft.keyvault/vaults",
+            "equals": "microsoft.insights/components",
             "field": "type"
           },
           {
@@ -120,7 +120,7 @@
                 }
               },
               "template": {
-                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                 "contentVersion": "1.0.0.0",
                 "parameters": {
                   "alertResourceGroupLocation": {
@@ -149,7 +149,7 @@
                     "dependsOn": [
                       "[concat('Microsoft.Resources/resourceGroups/', parameters('alertResourceGroupName'))]"
                     ],
-                    "name": "ActivityKeyVaultDelete",
+                    "name": "ActivityAppInsightsDeleteAlert",
                     "properties": {
                       "mode": "Incremental",
                       "parameters": {
@@ -175,7 +175,7 @@
                           {
                             "apiVersion": "2020-10-01",
                             "location": "global",
-                            "name": "ActivityKeyVaultDelete",
+                            "name": "ActivityAppInsightsDelete",
                             "properties": {
                               "condition": {
                                 "allOf": [
@@ -184,7 +184,7 @@
                                     "field": "category"
                                   },
                                   {
-                                    "equals": "Microsoft.KeyVault/vaults/delete",
+                                    "equals": "Microsoft.Insights/Components/Delete",
                                     "field": "operationName"
                                   },
                                   {
@@ -195,7 +195,8 @@
                                   }
                                 ]
                               },
-                              "description": "Activity Log Key Vault Delete",
+                              "description": "Activity Log Application Insights Delete Alert",
+                              "displayName": "Application Insights Resource Delete Alert (Preview)",
                               "enabled": "[parameters('enabled')]",
                               "parameters": {
                                 "enabled": {
@@ -254,7 +255,7 @@
                             "field": "microsoft.insights/activityLogAlerts/condition.allOf[*].field"
                           },
                           {
-                            "equals": "Microsoft.KeyVault/vaults/delete",
+                            "equals": "Microsoft.Insights/Components/Delete",
                             "field": "microsoft.insights/activityLogAlerts/condition.allOf[*].equals"
                           }
                         ]
@@ -267,7 +268,7 @@
             ]
           },
           "existenceScope": "resourcegroup",
-          "name": "ActivityKeyVaultDelete",
+          "name": "ActivityAppInsightsDelete",
           "resourceGroupName": "[parameters('alertResourceGroupName')]",
           "roleDefinitionIds": [
             "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
