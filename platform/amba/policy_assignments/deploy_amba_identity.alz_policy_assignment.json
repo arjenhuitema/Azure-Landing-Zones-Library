@@ -8,8 +8,8 @@
     "type": "SystemAssigned"
   },
   "properties": {
-    "description": "Initiative to deploy AMBA alerts relevant to the ALZ Identity management group",
-    "displayName": "Deploy Azure Monitor Baseline Alerts for Identity",
+    "description": "This initiative deploys Azure Monitor Baseline Alerts (AMBA-ALZ) to monitor identity components.",
+    "displayName": "Deploy Azure Monitor Baseline Alerts (AMBA-ALZ) for Identity",
     "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policySetDefinitions/Alerting-Identity",
     "enforcementMode": "Default",
     "nonComplianceMessages": [
@@ -17,6 +17,7 @@
         "message": "Alerting {enforcementMode} be deployed to Azure services."
       }
     ],
+    "notScopes": [],
     "parameters": {
       "ALZMonitorDisableTagName": {
         "value": "MonitorDisable"
@@ -68,7 +69,6 @@
     "metadata": {
       "_deployed_by_amba": true
     },
-    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
-    "notScopes": []
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder"
   }
 }
