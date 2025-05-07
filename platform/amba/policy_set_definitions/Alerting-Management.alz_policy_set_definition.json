@@ -1,8 +1,8 @@
 {
   "name": "Alerting-Management",
   "properties": {
-    "description": "Initiative to deploy AMBA alerts relevant to the ALZ Management management group",
-    "displayName": "Deploy Azure Monitor Baseline Alerts for Management",
+    "description": "This initiative deploys Azure Monitor Baseline Alerts (AMBA-ALZ) to monitor the management resources including Automation Account, Storage Account, Recovery Vault, and Log Analytics Workspace",
+    "displayName": "Deploy Azure Monitor Baseline Alerts (AMBA-ALZ) for Management",
     "metadata": {
       "_deployed_by_amba": true,
       "alzCloudEnvironments": [
@@ -10,7 +10,7 @@
       ],
       "category": "Monitoring",
       "source": "https://github.com/Azure/azure-monitor-baseline-alerts/",
-      "version": "1.3.1"
+      "version": "1.4.1"
     },
     "parameters": {
       "AATotalJobAlertAlertState": {
@@ -296,6 +296,18 @@
         },
         "type": "String"
       },
+      "LAWDailyCapLimitcheckWorkspaceAlertsStorageConfigured": {
+        "allowedValues": [
+          "true",
+          "false"
+        ],
+        "defaultValue": "false",
+        "metadata": {
+          "description": "Don't create the alert rule if the Log Analytics workspace doesn't have a configured linked storage account (relevant if you're using Customer Managed Keys).",
+          "displayName": "Log Analytics Workspace Daily Cap Limit Reached Alert Require a workspace linked storage"
+        },
+        "type": "String"
+      },
       "RVASRHealthMonitorPolicyEffect": {
         "allowedValues": [
           "modify",
@@ -527,6 +539,9 @@
           },
           "autoMitigate": {
             "value": "[parameters('LAWDailyCapLimitAutoMitigate')]"
+          },
+          "checkWorkspaceAlertsStorageConfigured": {
+            "value": "[parameters('LAWDailyCapLimitcheckWorkspaceAlertsStorageConfigured')]"
           },
           "effect": {
             "value": "[parameters('LAWDailyCapLimitPolicyEffect')]"

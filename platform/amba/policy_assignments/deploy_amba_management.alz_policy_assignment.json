@@ -8,8 +8,8 @@
     "type": "SystemAssigned"
   },
   "properties": {
-    "description": "Initiative to deploy AMBA alerts relevant to the ALZ Management management group",
-    "displayName": "Deploy Azure Monitor Baseline Alerts for Management",
+    "description": "This initiative deploys Azure Monitor Baseline Alerts (AMBA-ALZ) to monitor the management resources including Automation Account, Storage Account, Recovery Vault, and Log Analytics Workspace",
+    "displayName": "Deploy Azure Monitor Baseline Alerts (AMBA-ALZ) for Management",
     "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policySetDefinitions/Alerting-Management",
     "enforcementMode": "Default",
     "nonComplianceMessages": [
@@ -17,6 +17,7 @@
         "message": "Alerting {enforcementMode} be deployed to Azure services."
       }
     ],
+    "notScopes": [],
     "parameters": {
       "AATotalJobAlertPolicyEffect": {
         "value": "deployIfNotExists"
@@ -55,6 +56,9 @@
       "LAWDailyCapLimitPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "LAWDailyCapLimitcheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "RVASRHealthMonitorPolicyEffect": {
         "value": "modify"
       },
@@ -77,7 +81,6 @@
     "metadata": {
       "_deployed_by_amba": true
     },
-    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
-    "notScopes": []
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder"
   }
 }
