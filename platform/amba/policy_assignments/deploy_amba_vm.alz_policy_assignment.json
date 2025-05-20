@@ -8,8 +8,8 @@
     "type": "SystemAssigned"
   },
   "properties": {
-    "description": "This initiative deploys Azure Monitor Baseline Alerts to monitor Azure Virtual Machines.",
-    "displayName": "Deploy Azure Monitor Baseline Alerts for Virtual Machines",
+    "description": "This initiative deploys Azure Monitor Baseline Alerts (AMBA-ALZ) to monitor Azure Virtual Machines.",
+    "displayName": "Deploy Azure Monitor Baseline Alerts (AMBA-ALZ) for Azure Virtual Machines",
     "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policySetDefinitions/Alerting-VM",
     "enforcementMode": "Default",
     "nonComplianceMessages": [
@@ -17,6 +17,7 @@
         "message": "Alerting {enforcementMode} be deployed to Azure services."
       }
     ],
+    "notScopes": [],
     "parameters": {
       "ALZManagementSubscriptionId": {
         "value": ""
@@ -52,41 +53,73 @@
       "VMDataDiskReadLatencyPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "VMDataDiskReadLatencycheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "VMDataDiskSpacePolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "VMDataDiskSpacecheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       },
       "VMDataDiskWriteLatencyPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "VMDataDiskWriteLatencycheckWorkspaceAlertsStorageConfigured": {
+        "value": "true"
+      },
       "VMHeartBeatRGPolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "VMHeartBeatRGcheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       },
       "VMNetworkInPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "VMNetworkIncheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "VMNetworkOutPolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "VMNetworkOutcheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       },
       "VMOSDiskReadLatencyPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "VMOSDiskReadLatencycheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "VMOSDiskSpacePolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "VMOSDiskSpacecheckWorkspaceAlertsStorageConfigured": {
+        "value": "true"
       },
       "VMOSDiskWriteLatencyPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "VMOSDiskWriteLatencycheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "VMPercentCPUPolicyEffect": {
         "value": "deployIfNotExists"
       },
+      "VMPercentCPUcheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
       "VMPercentMemoryPolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "VMPercentMemorycheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
       }
     },
     "metadata": {
       "_deployed_by_amba": true
     },
-    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
-    "notScopes": []
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder"
   }
 }
