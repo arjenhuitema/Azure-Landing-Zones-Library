@@ -8,8 +8,8 @@
     "type": "SystemAssigned"
   },
   "properties": {
-    "description": "This initiative deploys Azure Monitor Baseline Alerts to monitor Web Services such as App Services.",
-    "displayName": "Deploy Azure Monitor Baseline Alerts for Web",
+    "description": "This initiative deploys Azure Monitor Baseline Alerts (AMBA-ALZ) to monitor Web Services such as App Services.",
+    "displayName": "Deploy Azure Monitor Baseline Alerts (AMBA-ALZ) for Web",
     "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policySetDefinitions/Alerting-Web",
     "enforcementMode": "Default",
     "nonComplianceMessages": [
@@ -17,7 +17,11 @@
         "message": "Alerting {enforcementMode} be deployed to Azure services."
       }
     ],
+    "notScopes": [],
     "parameters": {
+      "ALZManagementSubscriptionId": {
+        "value": ""
+      },
       "ALZMonitorDisableTagName": {
         "value": "MonitorDisable"
       },
@@ -28,6 +32,32 @@
           "Dev",
           "Sandbox"
         ]
+      },
+      "ALZMonitorResourceGroupLocation": {
+        "value": "eastus"
+      },
+      "ALZMonitorResourceGroupName": {
+        "value": "rg-amba-alz-prod-001"
+      },
+      "ALZMonitorResourceGroupTags": {
+        "value": {
+          "_deployed_by_alz_monitor": true
+        }
+      },
+      "ALZUserAssignedManagedIdentityName": {
+        "value": "id-amba-alz-arg-reader-prod-001"
+      },
+      "AppInsightsThrottlingLimitPolicyEffect": {
+        "value": "deployIfNotExists"
+      },
+      "AppInsightsThrottlingLimitcheckWorkspaceAlertsStorageConfigured": {
+        "value": "false"
+      },
+      "BYOUserAssignedManagedIdentityResourceId": {
+        "value": ""
+      },
+      "LAWDailyCapLimitPolicyEffect": {
+        "value": "deployIfNotExists"
       },
       "WSFCPUPercentagePolicyEffect": {
         "value": "deployIfNotExists"
@@ -40,12 +70,20 @@
       },
       "WSFMemoryPercentagePolicyEffect": {
         "value": "deployIfNotExists"
+      },
+      "activityAppInsightsDeletePolicyEffect": {
+        "value": "deployIfNotExists"
+      },
+      "activityLAWDeletePolicyEffect": {
+        "value": "deployIfNotExists"
+      },
+      "activityLAWKeyRegenPolicyEffect": {
+        "value": "deployIfNotExists"
       }
     },
     "metadata": {
       "_deployed_by_amba": true
     },
-    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
-    "notScopes": []
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder"
   }
 }
