@@ -8,7 +8,7 @@
       ],
       "display_name": "Azure Landing Zones",
       "exists": true,
-      "id": "alz",
+      "id": "alz-011628",
       "parent_id": null
     },
     {
@@ -17,8 +17,8 @@
       ],
       "display_name": "Platform",
       "exists": true,
-      "id": "platform",
-      "parent_id": "alz"
+      "id": "alz-011628-platform",
+      "parent_id": "alz-011628"
     },
     {
       "archetypes": [
@@ -26,8 +26,8 @@
       ],
       "display_name": "Landing zones",
       "exists": true,
-      "id": "landingzones",
-      "parent_id": "alz"
+      "id": "alz-011628-landingzones",
+      "parent_id": "alz-011628"
     },
     {
       "archetypes": [
@@ -35,8 +35,8 @@
       ],
       "display_name": "Management",
       "exists": true,
-      "id": "management",
-      "parent_id": "platform"
+      "id": "alz-011628-management",
+      "parent_id": "alz-011628-platform"
     },
     {
       "archetypes": [
@@ -44,8 +44,8 @@
       ],
       "display_name": "Connectivity",
       "exists": true,
-      "id": "connectivity",
-      "parent_id": "platform"
+      "id": "alz-011628-connectivity",
+      "parent_id": "alz-011628-platform"
     },
     {
       "archetypes": [
@@ -53,8 +53,8 @@
       ],
       "display_name": "Identity",
       "exists": true,
-      "id": "identity",
-      "parent_id": "platform"
+      "id": "alz-011628-identity",
+      "parent_id": "alz-011628-platform"
     }
   ]
 }
