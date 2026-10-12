@@ -149,8 +149,17 @@ jobs:
           alzlibtool check library --fix --offline "${{ env.library_dir }}"
         working-directory: ${{ github.workspace }}/${{ github.repository }}
 
-      - name: add files, commit and push
+      - name: recheck for changes after fixing filenames
         if: steps.git_status.outputs.changes > 0
+        id: final_status
+        run: |
+          mapfile -t "CHECK_GIT_STATUS" < <(git status -s ${{ env.library_dir }})
+          printf "%s\n" "${CHECK_GIT_STATUS[@]}"
+          echo "changes=${#CHECK_GIT_STATUS[@]}" >> "$GITHUB_OUTPUT"
+        working-directory: ${{ github.workspace }}/${{ github.repository }}
+
+      - name: add files, commit and push
+        if: steps.final_status.outputs.changes > 0
         run: |
           echo "pushing changes to origin..."
           git add ${{ env.library_dir }}
@@ -159,7 +168,7 @@ jobs:
         working-directory: ${{ github.repository }}
 
       - name: create pull request
-        if: steps.git_status.outputs.changes > 0
+        if: steps.final_status.outputs.changes > 0
         id: pr
         run: |
           PR="$(gh pr create \
@@ -175,7 +184,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: close and comment out of date prs
-        if: steps.git_status.outputs.changes > 0
+        if: steps.final_status.outputs.changes > 0
         run: |
           PULL_REQUESTS=$(gh pr list --search '${{ env.pr_title }}' --json number,headRefName)
           echo "$PULL_REQUESTS" | jq -r '.[] | select(.number != ${{ steps.pr.outputs.number }}) | .number' | xargs -I {} gh pr close {} --delete-branch --comment "Supersceeded by #${{ steps.pr.outputs.pull-request-number }}"
